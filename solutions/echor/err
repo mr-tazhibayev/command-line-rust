@@ -1,2 +1,10 @@
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/echor Hello world -n`
+   Compiling echor v0.1.0 (/home/gt_pc/projects/rust/command-line-rust/solutions/echor)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/echor`
+error: The following required arguments were not provided:
+    <TEXT>...
+
+USAGE:
+    echor [FLAGS] <TEXT>...
+
+For more information try --help
