@@ -61,33 +61,28 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
-fn print(reader: &mut Box<dyn BufRead>, number_lines: bool, number_nonblank_lines: bool) {
-    let mut line_num = 1;
-
-    for line in reader.lines() {
-        let text = line.unwrap();
-
-        if number_lines {
-            print!("     {}\t{}\n", line_num, text);
-            line_num += 1;
-        } else if number_nonblank_lines {
-            if text != "" {
-                print!("     {}\t{}\n", line_num, text);
-                line_num += 1;
-            } else {
-                println!("{}", text)
-            }
-        } else {
-            println!("{}", text);
-        }
-    } 
-}
-
 pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
-            Ok(_) => print(&mut open(&filename).unwrap(), config.number_lines, config.number_nonblank_lines)
+            Ok(file) => {
+                let mut last_num = 0;
+                for (line_num, line_res) in file.lines().enumerate() {
+                    let line = line_res?;
+                    if config.number_lines {
+                        println!("{:>6}\t{}", line_num + 1, line);
+                    } else if config.number_nonblank_lines {
+                        if !line.is_empty() {
+                            last_num += 1;
+                            println!("{:>6}\t{}", last_num, line);
+                        } else {
+                            println!();
+                        }
+                    } else {
+                        println!("{}", line);
+                    }
+                }
+            }
         }
     }
     Ok(())
